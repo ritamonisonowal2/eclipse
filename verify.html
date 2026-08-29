@@ -329,21 +329,46 @@
       });
     }
 
-    // Document Copy-Paste Link helper
+    // Document Copy-Paste Link & Image helper
     var btnCopyPasteDoc = document.getElementById('btnCopyPasteDoc');
     if (btnCopyPasteDoc) {
-      btnCopyPasteDoc.addEventListener('click', function() {
-        navigator.clipboard.readText().then(function(text) {
-          if (text && txtPrompt) {
-            txtPrompt.value = "Document link: " + text;
-            txtPrompt.focus();
+      btnCopyPasteDoc.addEventListener('click', async function() {
+        try {
+          if (navigator.clipboard && navigator.clipboard.read) {
+            var items = await navigator.clipboard.read();
+            for (var item of items) {
+              for (var type of item.types) {
+                if (type.startsWith('image/')) {
+                  var blob = await item.getType(type);
+                  var file = new File([blob], 'clipboard-document.png', { type: type });
+                  if (typeof loadFile === 'function') {
+                    loadFile('doc', file);
+                    btnCopyPasteDoc.textContent = 'Loaded Image!';
+                    setTimeout(function() { btnCopyPasteDoc.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg> Copy-Paste document link'; }, 1800);
+                    return;
+                  }
+                }
+              }
+            }
           }
-        }).catch(function() {
+          var text = await navigator.clipboard.readText();
+          if (text) {
+            if (/^https?:\/\/.*\.(png|jpe?g|webp|gif|pdf)/i.test(text.trim()) || text.trim().startsWith('data:image/')) {
+              if (typeof loadInto === 'function') {
+                loadInto('doc', text.trim(), { name: 'remote-document', type: 'image/jpeg', size: 0 });
+              }
+            }
+            if (txtPrompt) {
+              txtPrompt.value = "Document link: " + text;
+              txtPrompt.focus();
+            }
+          }
+        } catch (err) {
           if (txtPrompt) {
             txtPrompt.placeholder = "Paste document URL or image link here...";
             txtPrompt.focus();
           }
-        });
+        }
       });
     }
   });

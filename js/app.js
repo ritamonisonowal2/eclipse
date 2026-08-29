@@ -25,27 +25,87 @@ const HEIC_CDN = 'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.
 /* ---------------- UI wiring ---------------- */
 
 function makeDropzone(kind, dz, input) {
-  dz.addEventListener('click', (e) => { if (e.target.closest('.hint')) return; input.click(); });
-  input.addEventListener('change', () => { const f = input.files[0]; if (f) loadFile(kind, f); });
-  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('drag'); });
-  dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+  if (!dz || !input) return;
+
+  dz.addEventListener('click', (e) => {
+    if (e.target.closest('.hint') || e.target.closest('button')) return;
+    if (e.target === input) return;
+    input.click();
+  });
+
+  input.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  input.addEventListener('change', () => {
+    const f = input.files && input.files[0];
+    if (f) loadFile(kind, f);
+    input.value = '';
+  });
+
+  dz.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dz.classList.add('drag');
+  });
+
+  dz.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dz.classList.add('drag');
+  });
+
+  dz.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.currentTarget === dz && !dz.contains(e.relatedTarget)) {
+      dz.classList.remove('drag');
+    }
+  });
+
   dz.addEventListener('drop', (e) => {
-    e.preventDefault(); dz.classList.remove('drag');
-    const f = e.dataTransfer.files[0]; if (f) loadFile(kind, f);
+    e.preventDefault();
+    e.stopPropagation();
+    dz.classList.remove('drag');
+    const f = (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+    if (f) loadFile(kind, f);
   });
 }
 
 makeDropzone('doc', $('dzDoc'), $('fileDoc'));
 makeDropzone('face', $('dzFace'), $('fileFace'));
 
+// Global clipboard image paste listener
+window.addEventListener('paste', (e) => {
+  const items = (e.clipboardData || (e.originalEvent && e.originalEvent.clipboardData))?.items;
+  if (!items) return;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type && items[i].type.indexOf('image') !== -1) {
+      const file = items[i].getAsFile();
+      if (file) {
+        if (!state.doc) loadFile('doc', file);
+        else loadFile('face', file);
+        break;
+      }
+    }
+  }
+});
+
 async function loadFile(kind, file) {
+  if (!file) return;
   const name = (file && file.name) || '';
   const ext = name.split('.').pop().toLowerCase();
-  const type = file.type || '';
+  const type = (file && file.type) || '';
   if (type === 'application/pdf' || ext === 'pdf') return pdfInto(kind, file);
   if (/heic|heif/i.test(type) || /heic|heif/i.test(ext)) return heicInto(kind, file);
-  if (/^image\//.test(type) || /^(png|jpe?g|webp|bmp|gif)$/.test(ext)) return loadInto(kind, URL.createObjectURL(file), file);
-  showStatus(kind, 'Unsupported file â€” use a photo, scan, or PDF', 'err');
+  if (/^image\//i.test(type) || /^(png|jpe?g|webp|bmp|gif|jfif|svg|avif)$/i.test(ext) || (!type && !ext)) {
+    return loadInto(kind, URL.createObjectURL(file), file);
+  }
+  try {
+    return await loadInto(kind, URL.createObjectURL(file), file);
+  } catch (e) {
+    showStatus(kind, 'Unsupported file — use a photo, scan, or PDF', 'err');
+  }
 }
 
 function showStatus(kind, msg, type) {
@@ -58,7 +118,7 @@ function showStatus(kind, msg, type) {
 async function pdfInto(kind, file) {
   try {
     if (!window.pdfjsLib) {
-      showStatus(kind, 'Loading PDF decoder (needs internet)â€¦', 'warn');
+      showStatus(kind, 'Loading PDF decoder (needs internet)…', 'warn');
       const ok = await loadScript(PDF_CDN, 15000);
       if (!ok || !window.pdfjsLib) throw new Error('PDF decoder unavailable (offline?)');
       window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
@@ -76,14 +136,14 @@ async function pdfInto(kind, file) {
     const meta = { type: 'application/pdf', size: file.size, name: file.name, width: canvas.width, height: canvas.height, software: null, gps: false, exif: false, orientation: 1 };
     state[kind] = { img: canvas, canvas, file, meta };
     commitPreview(kind, canvas.toDataURL('image/jpeg', 0.9));
-    showStatus(kind, `PDF page 1 rendered ${canvas.width}Ã—${canvas.height}px Â· ready`, 'ok');
+    showStatus(kind, `PDF page 1 rendered ${canvas.width}×${canvas.height}px · ready`, 'ok');
   } catch (e) { console.error('pdf failed', e); showStatus(kind, 'PDF error: ' + e.message, 'err'); }
 }
 
 async function heicInto(kind, file) {
   try {
     if (!window.heic2any) {
-      showStatus(kind, 'Loading HEIC decoder (needs internet)â€¦', 'warn');
+      showStatus(kind, 'Loading HEIC decoder (needs internet)…', 'warn');
       const ok = await loadScript(HEIC_CDN, 15000);
       if (!ok || !window.heic2any) throw new Error('HEIC decoder unavailable (offline?)');
     }
@@ -94,47 +154,79 @@ async function heicInto(kind, file) {
   } catch (e) { console.error('heic failed', e); showStatus(kind, 'HEIC error: ' + e.message, 'err'); }
 }
 
-$('hintDoc').addEventListener('click', () => clearField('doc'));
-$('hintFace').addEventListener('click', () => clearField('face'));
-$('btnReset').addEventListener('click', () => { clearField('doc'); clearField('face'); resetUI(); });
-$('btnRun').addEventListener('click', run);
-$('btnSample').addEventListener('click', genSample);
+const hintDoc = $('hintDoc');
+if (hintDoc) hintDoc.addEventListener('click', (e) => { e.stopPropagation(); clearField('doc'); });
+const hintFace = $('hintFace');
+if (hintFace) hintFace.addEventListener('click', (e) => { e.stopPropagation(); clearField('face'); });
+const btnReset = $('btnReset');
+if (btnReset) btnReset.addEventListener('click', () => { clearField('doc'); clearField('face'); resetUI(); });
+const btnRun = $('btnRun');
+if (btnRun) btnRun.addEventListener('click', run);
+const btnSample = $('btnSample');
+if (btnSample) btnSample.addEventListener('click', genSample);
 
 async function loadInto(kind, url, file) {
   try {
     const img = await IMG(url);
     const canvas = makeCanvas(img);
-    const meta = await readMetadata(file);
+    let meta = { type: file ? (file.type || 'image/jpeg') : 'image/jpeg', size: file ? file.size : 0, name: file ? file.name : '', width: canvas.width, height: canvas.height, software: null, gps: false, exif: false, orientation: 1 };
+    if (file) {
+      try {
+        const parsed = await readMetadata(file);
+        if (parsed) meta = { ...meta, ...parsed };
+      } catch (err) {
+        console.warn('Metadata parse skipped:', err);
+      }
+    }
     state[kind] = { img, canvas, file, meta };
     commitPreview(kind, url);
-    showStatus(kind, `Loaded ${canvas.width}Ã—${canvas.height}px Â· ${(meta.type || 'image').replace('image/', '').toUpperCase()} Â· ready`, 'ok');
+    showStatus(kind, `Loaded ${canvas.width}×${canvas.height}px · ${(meta.type || 'image').replace('image/', '').toUpperCase()} · ready`, 'ok');
   } catch (e) {
     console.error('load failed', e);
-    showStatus(kind, 'Could not read this file â€” not a valid image? Try JPG/PNG or a PDF.', 'err');
+    showStatus(kind, 'Could not read this file — not a valid image? Try JPG/PNG or a PDF.', 'err');
   }
 }
 
 function commitPreview(kind, src) {
   const key = kind === 'doc' ? 'imgDoc' : 'imgFace';
   const pv = kind === 'doc' ? 'pvDoc' : 'pvFace';
-  $(key).src = src;
-  $(pv).hidden = false;
-  $(pv).previousElementSibling.style.display = 'none';
-  $(kind === 'doc' ? 'hintDoc' : 'hintFace').textContent = 'X remove';
+  const img = $(key);
+  const pvEl = $(pv);
+  if (img) img.src = src;
+  if (pvEl) {
+    pvEl.hidden = false;
+    const parentDz = pvEl.closest('.dropzone');
+    if (parentDz) {
+      const inner = parentDz.querySelector('.dz-inner');
+      if (inner) inner.style.display = 'none';
+    }
+  }
+  const hint = $(kind === 'doc' ? 'hintDoc' : 'hintFace');
+  if (hint) hint.textContent = '✕ Remove';
   refreshRun();
 }
 
 function clearField(kind) {
   state[kind] = null;
   const pv = kind === 'doc' ? 'pvDoc' : 'pvFace';
+  const pvEl = $(pv);
   showStatus(kind, '', '');
-  $(pv).hidden = true;
-  $(pv).previousElementSibling.style.display = '';
+  if (pvEl) {
+    pvEl.hidden = true;
+    const parentDz = pvEl.closest('.dropzone');
+    if (parentDz) {
+      const inner = parentDz.querySelector('.dz-inner');
+      if (inner) inner.style.display = '';
+    }
+  }
+  const input = $(kind === 'doc' ? 'fileDoc' : 'fileFace');
+  if (input) input.value = '';
   refreshRun();
 }
 
 function refreshRun() {
-  $('btnRun').disabled = !state.doc || state.busy;
+  const btn = $('btnRun');
+  if (btn) btn.disabled = !state.doc || state.busy;
 }
 
 function makeCanvas(img, maxDim = 1400) {
@@ -352,24 +444,40 @@ async function readMetadata(file) {
 }
 
 function parseTiff(dv, base, m) {
-  const bo = dv.getUint16(base, false) === 0x4949; // II little
-  const u16 = (o) => dv.getUint16(base + o, bo);
-  const u32 = (o) => dv.getUint32(base + o, bo);
-  if (u16(2) !== 0x2a) return;
-  let ifd = u32(4);
-  const entries = u16(ifd);
-  const tags = { 0x0100: 'width', 0x0101: 'height', 0x0110: 'model', 0x0132: 'made', 0x0131: 'software', 0x8825: 'gps' };
-  const str = (o, l) => { const a = []; for (let i = 0; i < l; i++) { const ch = dv.getUint8(base + o + i); if (ch === 0) break; a.push(String.fromCharCode(ch)); } return a.join(''); };
-  for (let i = 0; i < entries; i++) {
-    const e = ifd + 2 + i * 12;
-    const tag = dv.getUint16(e, bo);
-    const kind = tags[tag];
-    const cnt = u32(e + 4);
-    const valOff = dv.getUint32(e + 8, bo);
-    if (kind === 'width' && cnt === 1) m.width = valOff;
-    else if (kind === 'height' && cnt === 1) m.height = valOff;
-    else if ((kind === 'software' || kind === 'model' || kind === 'made')) m[kind] = cnt <= 8 ? str(e + 8, cnt) : str(valOff, Math.min(cnt, 64));
-    else if (kind === 'gps') m.gps = true;
+  try {
+    if (base + 8 > dv.byteLength) return;
+    const bo = dv.getUint16(base, false) === 0x4949; // II little
+    const u16 = (o) => (base + o + 2 <= dv.byteLength ? dv.getUint16(base + o, bo) : 0);
+    const u32 = (o) => (base + o + 4 <= dv.byteLength ? dv.getUint32(base + o, bo) : 0);
+    if (u16(2) !== 0x2a) return;
+    let ifd = u32(4);
+    if (!ifd || base + ifd + 2 > dv.byteLength) return;
+    const entries = u16(ifd);
+    const tags = { 0x0100: 'width', 0x0101: 'height', 0x0110: 'model', 0x0132: 'made', 0x0131: 'software', 0x8825: 'gps' };
+    const str = (o, l) => {
+      const a = [];
+      for (let i = 0; i < l; i++) {
+        if (base + o + i >= dv.byteLength) break;
+        const ch = dv.getUint8(base + o + i);
+        if (ch === 0) break;
+        a.push(String.fromCharCode(ch));
+      }
+      return a.join('');
+    };
+    for (let i = 0; i < entries; i++) {
+      const e = ifd + 2 + i * 12;
+      if (base + e + 12 > dv.byteLength) break;
+      const tag = dv.getUint16(base + e, bo);
+      const kind = tags[tag];
+      const cnt = u32(e + 4);
+      const valOff = dv.getUint32(base + e + 8, bo);
+      if (kind === 'width' && cnt === 1) m.width = valOff;
+      else if (kind === 'height' && cnt === 1) m.height = valOff;
+      else if ((kind === 'software' || kind === 'model' || kind === 'made')) m[kind] = cnt <= 8 ? str(e + 8, cnt) : str(valOff, Math.min(cnt, 64));
+      else if (kind === 'gps') m.gps = true;
+    }
+  } catch (e) {
+    // Ignore corrupt EXIF silently
   }
 }
 

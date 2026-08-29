@@ -1,0 +1,13 @@
+﻿{
+  "name": "eclipse-verify",
+  "version": "1.0.0",
+  "description": "ECLIPSE VERIFY - Explainable Identity & Document Verification Pipeline",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["identity", "verification", "ocr", "forensics", "biometrics"],
+  "author": "subha-legit",
+  "license": "MIT"
+}

@@ -1,0 +1,426 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECLIPSE VERIFY - Glassmorphism Identity Intelligence</title>
+<meta name="description" content="AI-powered identity document verification, neural OCR, tamper detection, and biometric face matching with explainable risk scoring. 100% in-browser privacy.">
+<meta property="og:title" content="ECLIPSE VERIFY - AI Document &amp; Identity Intelligence">
+<meta property="og:description" content="Verify identity documents in seconds with explainable AI risk scoring. 100% in-browser processing.">
+<meta property="og:type" content="website">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="%230f766e" stroke-width="2.5"/><path d="M16 4a12 12 0 0 1 10 16A12 12 0 0 1 16 28" fill="none" stroke="%232dd4bf" stroke-width="2.5" stroke-linecap="round"/><circle cx="16" cy="16" r="4" fill="%230d9488"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Dynamic Glass Background with Glowing Blobs -->
+<div class="glass-blob-container">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Sticky Glass Navigation Bar -->
+<header class="site-nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html" aria-label="ECLIPSE VERIFY home">
+      <span class="brand-mark">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="17" cy="17" r="14" stroke="currentColor" stroke-width="2.5" opacity="0.2"/>
+          <path d="M17 3A14 14 0 0 1 29 21A14 14 0 0 1 17 31" stroke="var(--brand)" stroke-width="2.8" stroke-linecap="round"/>
+          <circle cx="17" cy="17" r="8" stroke="var(--brand-2)" stroke-width="2" stroke-dasharray="24 8"/>
+          <circle cx="17" cy="17" r="3.5" fill="var(--brand)"/>
+        </svg>
+      </span>
+      <span class="brand-name">ECLIPSE<em>VERIFY</em></span>
+    </a>
+    <nav class="main" id="mainNav">
+      <a href="index.html" class="active">Home</a>
+      <a href="product.html">Product</a>
+      <a href="verify.html">Try Demo</a>
+    </nav>
+    <div class="nav-cta">
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle light and dark theme"></button>
+      <span id="authZone"></span>
+      <a href="verify.html" class="btn btn-primary btn-sm">Verify a document</a>
+    </div>
+    <button class="nav-toggle" onclick="document.body.classList.toggle('nav-open')" aria-label="Toggle navigation menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- Hero Section with Glass Card & 3D Vanta Globe -->
+  <section class="hero">
+    <div id="vanta-bg" class="hero-bg" style="position: absolute; inset: 0; z-index: 0; opacity: 0.85;"></div>
+    <div class="container hero-inner" style="position: relative; z-index: 2;">
+      <div class="reveal">
+        <span class="eyebrow"><span class="pulse"></span> AI-Powered Identity Intelligence</span>
+        <h1>Verify documents in <span class="accent">seconds</span>. Trust what you see is real.</h1>
+        <p class="lead">ECLIPSE VERIFY extracts text with neural OCR, detects image tampering, compares biometric face embeddings, and scores risk in one explainable pipeline. Built for onboarding, KYC, and compliance teams.</p>
+        <div class="hero-actions">
+          <a href="verify.html" class="btn btn-primary btn-lg" id="btnTryDemo">Try the live demo
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="product.html" class="btn btn-secondary btn-lg" id="btnSeeHowItWorks">See how it works</a>
+        </div>
+        <p class="hero-note"><span class="dot"></span> Real-time image analysis runs 100% in your browser &mdash; zero server uploads.</p>
+      </div>
+
+      <!-- Prominent Glass Inspector Panel -->
+      <div class="mock reveal" style="transition-delay:.12s;" aria-label="Interactive document verification assessment preview">
+        <div class="mock-head">
+          <div>
+            <div class="t">Document Risk Assessment</div>
+          </div>
+          <div class="sample-tabs" aria-label="Toggle sample evaluation">
+            <button type="button" class="sample-tab active" data-sample="high" id="sampleTabHigh">High Risk</button>
+            <button type="button" class="sample-tab" data-sample="low" id="sampleTabLow">Verified</button>
+          </div>
+          <span class="badge hi" id="mockBadge">HIGH RISK</span>
+        </div>
+        <div class="mock-body">
+          <div class="ring-gauge">
+            <svg viewBox="0 0 120 120" width="132" height="132" aria-hidden="true">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="10"/>
+              <circle class="ring-arc" id="mockArc" cx="60" cy="60" r="50" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="round" stroke-dasharray="314.15" stroke-dashoffset="50"/>
+            </svg>
+            <div class="ring-center">
+              <span class="n" id="mockScoreVal">84</span>
+              <span class="l">RISK / 100</span>
+            </div>
+          </div>
+          <div class="mock-checks" id="mockChecksList">
+            <div class="mcheck"><span class="dot warn"></span> Document Validation <span class="t">46</span></div>
+            <div class="mcheck"><span class="dot fail"></span> Tampering Analysis <span class="t">27</span></div>
+            <div class="mcheck"><span class="dot warn"></span> Face Verification <span class="t">61</span></div>
+            <div class="mcheck"><span class="dot fail"></span> Data Consistency <span class="t">38</span></div>
+          </div>
+        </div>
+        <div class="mock-act danger" id="mockActBox">
+          <span class="lbl">RECOMMENDED ACTION</span>
+          <span class="val" id="mockActVal">SECONDARY VERIFICATION</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Responsive 3-Column Glass Feature Grid -->
+  <section id="features">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">The platform</div>
+        <h2>Everything you need to check a document</h2>
+        <p>One upload produces a clear risk score, four explainable checks, and an automated recommended action &mdash; so your team can act with certainty.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card reveal">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7V5a2 2 0 0 1 2-2h2M16 3h2a2 2 0 0 1 2 2v2M20 17v2a2 2 0 0 1-2 2h-2M8 21H6a2 2 0 0 1-2-2v-2"/>
+              <rect x="7" y="7" width="10" height="10" rx="1.5"/>
+              <line x1="9" y1="10" x2="15" y2="10"/>
+              <line x1="9" y1="14" x2="13" y2="14"/>
+            </svg>
+          </div>
+          <h3>Neural OCR Extraction</h3>
+          <p>On-device OCR extracts names, dates, document numbers, and MRZ codes from ID cards, passports, and permits offline.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.05s">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <circle cx="12" cy="11" r="3"/>
+              <path d="M14.12 13.12L17.5 16.5"/>
+            </svg>
+          </div>
+          <h3>Tampering Forensics</h3>
+          <p>Error-level analysis (ELA), copy-move region detection, and noise-heterogeneity checks flag modified or digitally altered documents.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.1s">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7V5a2 2 0 0 1 2-2h2M16 3h2a2 2 0 0 1 2 2v2M20 17v2a2 2 0 0 1-2 2h-2M8 21H6a2 2 0 0 1-2-2v-2"/>
+              <circle cx="9" cy="10" r="1.2" fill="currentColor"/>
+              <circle cx="15" cy="10" r="1.2" fill="currentColor"/>
+              <path d="M9.5 15a3.5 3.5 0 0 0 5 0"/>
+              <path d="M12 11v2"/>
+            </svg>
+          </div>
+          <h3>Biometric Face Match</h3>
+          <p>Facial feature detection and embedding vector similarity compare the document portrait against a live selfie in real time.</p>
+        </div>
+        <div class="card reveal">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="6" rx="2"/>
+              <rect x="3" y="14" width="18" height="6" rx="2"/>
+              <path d="M7 10v4M17 10v4M12 10v4" stroke-dasharray="2 2"/>
+              <circle cx="7" cy="7" r="1" fill="currentColor"/>
+              <circle cx="7" cy="17" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3>Data Consistency Engine</h3>
+          <p>Cross-validates extracted fields, birthdates, expiration ranges, and structural checksums to catch internal discrepancies instantly.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.05s">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/>
+              <rect x="7" y="12" width="3" height="6" rx="1"/>
+              <rect x="12" y="8" width="3" height="10" rx="1"/>
+              <rect x="17" y="5" width="3" height="13" rx="1"/>
+              <path d="M7 10l5-4 5 2 3-3"/>
+            </svg>
+          </div>
+          <h3>Explainable Risk Matrix</h3>
+          <p>All signals fuse into a transparent 0&ndash;100 risk score detailing exact penalty reasons for every decision &mdash; no black boxes.</p>
+        </div>
+        <div class="card reveal" style="transition-delay:.1s">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="11" width="14" height="10" rx="2"/>
+              <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+              <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3>Edge Privacy First</h3>
+          <p>Images never leave your user's browser. The complete inspection pipeline executes client-side for total data protection compliance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Stepper -->
+  <section class="alt" id="how-it-works">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">How it works</div>
+        <h2>From upload to decision in four clear steps</h2>
+      </div>
+      <div class="steps">
+        <div class="step card reveal">
+          <span class="n"></span>
+          <h3>Upload</h3>
+          <p>Select or drag-and-drop a document image and optional portrait selfie.</p>
+        </div>
+        <div class="step card reveal" style="transition-delay:.06s">
+          <span class="n"></span>
+          <h3>Analyze</h3>
+          <p>Client-side WebGL and WASM engines execute OCR, forensics, and face alignment.</p>
+        </div>
+        <div class="step card reveal" style="transition-delay:.12s">
+          <span class="n"></span>
+          <h3>Score</h3>
+          <p>4 explainable check modules compute confidence scores and weighted risk penalties.</p>
+        </div>
+        <div class="step card reveal" style="transition-delay:.18s">
+          <span class="n"></span>
+          <h3>Act</h3>
+          <p>Receive an instant Clear, Manual Review, or Secondary Verification decision output.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Four Explainable Checks Breakdown -->
+  <section id="checks">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">Explainable checks</div>
+        <h2>Four checks. Zero guesswork.</h2>
+        <p>Every analysis report shows the exact computer vision signals that influenced the final score.</p>
+      </div>
+      <div class="grid g2">
+        <div class="card check-card ok reveal">
+          <span class="st">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </span>
+          <div>
+            <div class="chk-title">Document Validation</div>
+            <p>Aspect-ratio fit, focus sharpness, OCR text density, and standard layout geometry &mdash; confirms the document structure matches known formats.</p>
+          </div>
+        </div>
+        <div class="card check-card warn reveal" style="transition-delay:.06s">
+          <span class="st">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </span>
+          <div>
+            <div class="chk-title">Tampering &amp; Editing Analysis</div>
+            <p>Scans for compression hotspots, cloned pixel regions, spliced text boxes, and inconsistent digital noise signatures across the document surface.</p>
+          </div>
+        </div>
+        <div class="card check-card ok reveal" style="transition-delay:.12s">
+          <span class="st">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <div>
+            <div class="chk-title">Face &amp; Selfie Verification</div>
+            <p>Detects document portrait bounding boxes, generates 128-d facial embeddings, and compares vector distance against the live selfie capture.</p>
+          </div>
+        </div>
+        <div class="card check-card warn reveal" style="transition-delay:.18s">
+          <span class="st">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </span>
+          <div>
+            <div class="chk-title">Data Coherence &amp; Cross-Checks</div>
+            <p>Ensures dates of birth, issue dates, document numbers, and MRZ checksum strings are mathematically plausible and internally consistent.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Glass Call-to-Action Band -->
+  <section>
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>See your own document scored in seconds</h2>
+        <p>Upload a sample passport, driver's license, or test ID image and watch our pipeline explain every decision step by step.</p>
+        <a href="verify.html" class="btn btn-primary btn-lg" id="btnCtaDemo">Open the live demo
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Semi-Transparent Glass Footer -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html" aria-label="ECLIPSE VERIFY home">
+          <span class="brand-mark">
+            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="17" cy="17" r="14" stroke="currentColor" stroke-width="2.5" opacity="0.2"/>
+              <path d="M17 3A14 14 0 0 1 29 21A14 14 0 0 1 17 31" stroke="var(--brand)" stroke-width="2.8" stroke-linecap="round"/>
+              <circle cx="17" cy="17" r="8" stroke="var(--brand-2)" stroke-width="2" stroke-dasharray="24 8"/>
+              <circle cx="17" cy="17" r="3.5" fill="var(--brand)"/>
+            </svg>
+          </span>
+          <span class="brand-name">ECLIPSE<em>VERIFY</em></span>
+        </a>
+        <p>Document and identity intelligence with transparent, explainable risk scoring. Built for trust and compliance by design.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="product.html">How it works</a>
+        <a href="product.html#checks">The four checks</a>
+        <a href="product.html#model">Risk model</a>
+        <a href="verify.html">Live demo</a>
+      </div>
+      <div class="foot-col">
+        <h4>Platform</h4>
+        <a href="product.html#privacy">Privacy &amp; security</a>
+        <a href="product.html#roadmap">Roadmap</a>
+        <a href="product.html#fabric">Hyperledger Fabric</a>
+      </div>
+      <div class="foot-col">`r`n        <h4>Company</h4>`r`n        <a href="product.html">About &amp; Overview</a>`r`n        <a href="verify.html">System Status</a>`r`n        <a href="signin.html">Sign In &amp; Portal</a>`r`n      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 ECLIPSE VERIFY. All rights reserved.</span>
+      <span class="demo">ML PROTOTYPE - DEMO ONLY</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<!-- Three.js + Vanta.js 3D Globe Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var vantaEffect = null;
+    function initVanta() {
+      if (typeof VANTA !== 'undefined' && VANTA.GLOBE) {
+        var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        vantaEffect = VANTA.GLOBE({
+          el: "#vanta-bg",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0x0d9488,
+          color2: 0x14b8a6,
+          size: 1.35,
+          backgroundColor: isDark ? 0x070b14 : 0xf4f7fc
+        });
+      }
+    }
+    initVanta();
+
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.attributeName === 'data-theme') {
+          if (vantaEffect) vantaEffect.destroy();
+          initVanta();
+        }
+      });
+    });
+    observer.observe(document.documentElement, { attributes: true });
+  });
+
+  // Interactive Hero Risk Sample Switcher
+  document.addEventListener('DOMContentLoaded', function() {
+    var tabs = document.querySelectorAll('.sample-tab');
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        tabs.forEach(function(t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        
+        var sample = tab.getAttribute('data-sample');
+        var arc = document.getElementById('mockArc');
+        var scoreVal = document.getElementById('mockScoreVal');
+        var badge = document.getElementById('mockBadge');
+        var actBox = document.getElementById('mockActBox');
+        var actVal = document.getElementById('mockActVal');
+        var checksList = document.getElementById('mockChecksList');
+        
+        if (sample === 'low') {
+          if (arc) {
+            arc.style.strokeDashoffset = '275';
+            arc.style.stroke = '#22c55e';
+          }
+          if (scoreVal) scoreVal.textContent = '12';
+          if (badge) { badge.className = 'badge ok'; badge.textContent = 'LOW RISK'; }
+          if (actBox) { actBox.className = 'mock-act success'; }
+          if (actVal) { actVal.textContent = 'AUTO CLEAR'; }
+          if (checksList) {
+            checksList.innerHTML = 
+              '<div class="mcheck"><span class="dot ok"></span> Document Validation <span class="t">98</span></div>' +
+              '<div class="mcheck"><span class="dot ok"></span> Tampering Analysis <span class="t">95</span></div>' +
+              '<div class="mcheck"><span class="dot ok"></span> Face Verification <span class="t">94</span></div>' +
+              '<div class="mcheck"><span class="dot ok"></span> Data Consistency <span class="t">99</span></div>';
+          }
+        } else {
+          if (arc) {
+            arc.style.strokeDashoffset = '50';
+            arc.style.stroke = '#ef4444';
+          }
+          if (scoreVal) scoreVal.textContent = '84';
+          if (badge) { badge.className = 'badge hi'; badge.textContent = 'HIGH RISK'; }
+          if (actBox) { actBox.className = 'mock-act danger'; }
+          if (actVal) { actVal.textContent = 'SECONDARY VERIFICATION'; }
+          if (checksList) {
+            checksList.innerHTML = 
+              '<div class="mcheck"><span class="dot warn"></span> Document Validation <span class="t">46</span></div>' +
+              '<div class="mcheck"><span class="dot fail"></span> Tampering Analysis <span class="t">27</span></div>' +
+              '<div class="mcheck"><span class="dot warn"></span> Face Verification <span class="t">61</span></div>' +
+              '<div class="mcheck"><span class="dot fail"></span> Data Consistency <span class="t">38</span></div>';
+          }
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>

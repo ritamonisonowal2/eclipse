@@ -1,0 +1,383 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Architecture &amp; Pipeline - ECLIPSE VERIFY</title>
+<meta name="description" content="Inside the ECLIPSE VERIFY document intelligence pipeline: preprocessing, neural OCR, tamper forensics, facial embeddings, and explainable risk fusion.">
+<meta property="og:title" content="Product Architecture - ECLIPSE VERIFY">
+<meta property="og:description" content="Explainable AI identity verification pipeline architecture and privacy-first model.">
+<meta property="og:type" content="website">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="%230f766e" stroke-width="2.5"/><path d="M16 4a12 12 0 0 1 10 16A12 12 0 0 1 16 28" fill="none" stroke="%232dd4bf" stroke-width="2.5" stroke-linecap="round"/><circle cx="16" cy="16" r="4" fill="%230d9488"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html" aria-label="ECLIPSE VERIFY home">
+      <span class="brand-mark">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="17" cy="17" r="14" stroke="currentColor" stroke-width="2.5" opacity="0.2"/>
+          <path d="M17 3A14 14 0 0 1 29 21A14 14 0 0 1 17 31" stroke="var(--brand)" stroke-width="2.8" stroke-linecap="round"/>
+          <circle cx="17" cy="17" r="8" stroke="var(--brand-2)" stroke-width="2" stroke-dasharray="24 8"/>
+          <circle cx="17" cy="17" r="3.5" fill="var(--brand)"/>
+        </svg>
+      </span>
+      <span class="brand-name">ECLIPSE<em>VERIFY</em></span>
+    </a>
+    <nav class="main" id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="product.html" class="active">Product</a>
+      <a href="verify.html">Try Demo</a>
+    </nav>
+    <div class="nav-cta">
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle light and dark theme"></button>
+      <span id="authZone"></span>
+      <a href="verify.html" class="btn btn-primary btn-sm">Verify a document</a>
+    </div>
+    <button class="nav-toggle" onclick="document.body.classList.toggle('nav-open')" aria-label="Toggle navigation menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- Page Hero with Vanta 3D Globe -->
+  <section class="hero">
+    <div id="vanta-bg-product" class="hero-bg" style="position: absolute; inset: 0; z-index: 0; opacity: 0.85;"></div>
+    <div class="hero-grid" style="z-index: 1;"></div>
+    <div class="container hero-inner" style="position: relative; z-index: 2; padding: 72px 0 80px; grid-template-columns: 1fr; text-align: center;">
+      <div class="reveal" style="max-width: 760px; margin: 0 auto;">
+        <span class="eyebrow"><span class="pulse"></span> System Architecture</span>
+        <h1>How ECLIPSE VERIFY Works</h1>
+        <p class="lead" style="margin: 0 auto; max-width: 640px;">A single, explainable machine learning pipeline transforms document scans and selfie photos into verifiable risk metrics, four detailed signal audits, and automated verdict actions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ML Pipeline Flow Section -->
+  <section>
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">The ML flow</div>
+        <h2>Document + Face &rarr; Verified Decision</h2>
+        <p style="max-width: 580px; margin: 0 auto;">From raw image capture to automated risk verdict in seven sequential pipeline steps.</p>
+      </div>
+      <div class="pipe reveal">
+        <div class="node">
+          DOCUMENT
+          <small>+ FACE image</small>
+        </div>
+        <div class="arr">&rarr;</div>
+        <div class="node">
+          PREPROCESSING
+          <small>grayscale &bull; denoise &bull; features</small>
+        </div>
+        <div class="arr">&rarr;</div>
+        <div class="node">
+          OCR + FEATURES
+          <small>text &bull; blur &bull; edges &bull; entropy</small>
+        </div>
+        <div class="arr">&rarr;</div>
+        <div class="node">
+          ML MODEL
+          <small>heuristic risk engine</small>
+        </div>
+        <div class="arr">&rarr;</div>
+        <div class="node">
+          FACE SIMILARITY
+          <small>128-D FaceRecognitionNet</small>
+        </div>
+        <div class="arr">&rarr;</div>
+        <div class="node">
+          FEATURE FUSION
+          <small>weighted checks</small>
+        </div>
+        <div class="arr">&rarr;</div>
+        <div class="node hl">
+          RISK SCORE
+          <small>+ explanation + action</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Four Checks Section -->
+  <section class="alt" id="checks">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">Explainable checks</div>
+        <h2>The four checks behind every score</h2>
+        <p style="max-width: 580px; margin: 0 auto;">Every evaluation executes four independent computer vision check modules.</p>
+      </div>
+      <div class="grid g2">
+        <div class="card reveal">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <span class="tag" style="background:rgba(18,161,80,0.14);color:#4ade80;border:1px solid rgba(18,161,80,0.3);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;">VAL-01</span>
+            <div class="ic" style="margin-bottom:0; width:36px; height:36px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+            </div>
+          </div>
+          <h3>Document Validation</h3>
+          <p>Confirms the image behaves like an authentic identity document: aspect ratio within ID-band width, sharp focus, realistic OCR word density, and plausible metadata signatures.</p>
+          <p class="smallprint" style="margin-top:16px;color:var(--muted);font-family:var(--mono);font-size:12px;border-top:1px dashed var(--line);padding-top:10px;">Inputs: aspect ratio &bull; Laplacian blur &bull; OCR word count &bull; EXIF data</p>
+        </div>
+
+        <div class="card reveal" style="transition-delay:.06s">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <span class="tag" style="background:rgba(217,138,6,0.14);color:#fbbf24;border:1px solid rgba(217,138,6,0.3);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;">TAM-02</span>
+            <div class="ic" style="margin-bottom:0; width:36px; height:36px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/><path d="M14.12 13.12L17.5 16.5"/></svg>
+            </div>
+          </div>
+          <h3>Tampering Analysis</h3>
+          <p>Scans for digital alterations: Error Level Analysis (ELA) re-save compression hotspots, copy-move pixel cloning, and localized sharpness inconsistencies across document surfaces.</p>
+          <p class="smallprint" style="margin-top:16px;color:var(--muted);font-family:var(--mono);font-size:12px;border-top:1px dashed var(--line);padding-top:10px;">Inputs: ELA blocks &bull; copy-move similarity &bull; blur heterogeneity</p>
+        </div>
+
+        <div class="card reveal" style="transition-delay:.12s">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <span class="tag" style="background:rgba(20,184,166,0.14);color:#2dd4bf;border:1px solid rgba(20,184,166,0.3);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;">FAC-03</span>
+            <div class="ic" style="margin-bottom:0; width:36px; height:36px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8.5" r="3.4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+            </div>
+          </div>
+          <h3>Face Verification</h3>
+          <p>Processes document portrait and live selfie photos through FaceRecognitionNet, generates 128-D vector embeddings, calculates Euclidean distance, and verifies blink liveness.</p>
+          <p class="smallprint" style="margin-top:16px;color:var(--muted);font-family:var(--mono);font-size:12px;border-top:1px dashed var(--line);padding-top:10px;">Inputs: 128-D embeddings &bull; Euclidean vector distance &bull; blink liveness</p>
+        </div>
+
+        <div class="card reveal" style="transition-delay:.18s">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <span class="tag" style="background:rgba(12,107,98,0.14);color:#14b8a6;border:1px solid rgba(12,107,98,0.3);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;">CON-04</span>
+            <div class="ic" style="margin-bottom:0; width:36px; height:36px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 10v4M17 10v4M12 10v4" stroke-dasharray="2 2"/></svg>
+            </div>
+          </div>
+          <h3>Data Consistency</h3>
+          <p>Parses extracted dates of birth, issue/expiration windows, document ID patterns, and standard field labels, evaluating them against mathematical validation rules.</p>
+          <p class="smallprint" style="margin-top:16px;color:var(--muted);font-family:var(--mono);font-size:12px;border-top:1px dashed var(--line);padding-top:10px;">Inputs: date parser &bull; ID pattern matcher &bull; field labels &bull; checksums</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Risk Model Section -->
+  <section id="model">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="sec-kicker">Risk model</div>
+        <h2>Weighted fusion, fully explained</h2>
+        <p>Each module produces a confidence trust score (0&ndash;100). The final risk score is <code>100 &minus; weighted trust</code>, and the decision action follows defined thresholds.</p>
+      </div>
+      <div class="reveal">
+        <div class="card" style="padding: 24px; overflow-x: auto;">
+          <table class="model" style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--line);">
+                <th style="padding: 14px; font-weight: 700; color: var(--txt);">Check Module</th>
+                <th style="padding: 14px; font-weight: 700; color: var(--txt);">Weight</th>
+                <th style="padding: 14px; font-weight: 700; color: var(--txt);">Evaluation Factors</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--line);">
+                <td style="padding: 14px; font-weight: 600; color: var(--txt);">Document Validation</td>
+                <td style="padding: 14px; color: var(--brand); font-weight: 700;">30%</td>
+                <td style="padding: 14px; color: var(--muted);">Aspect ratio &bull; Focus quality &bull; OCR word volume</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--line);">
+                <td style="padding: 14px; font-weight: 600; color: var(--txt);">Tampering Analysis</td>
+                <td style="padding: 14px; color: var(--brand); font-weight: 700;">30%</td>
+                <td style="padding: 14px; color: var(--muted);">Error-level re-save &bull; Pixel cloning &bull; Regional blur</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--line);">
+                <td style="padding: 14px; font-weight: 600; color: var(--txt);">Face Verification</td>
+                <td style="padding: 14px; color: var(--brand); font-weight: 700;">25%</td>
+                <td style="padding: 14px; color: var(--muted);">Face presence &bull; Vector embedding match &bull; Liveness</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--line);">
+                <td style="padding: 14px; font-weight: 600; color: var(--txt);">Data Consistency</td>
+                <td style="padding: 14px; color: var(--brand); font-weight: 700;">15%</td>
+                <td style="padding: 14px; color: var(--muted);">Date logic &bull; ID pattern syntax &bull; Checksum coherence</td>
+              </tr>
+              <tr style="font-weight: 800; background: var(--panel2);">
+                <td style="padding: 16px; color: var(--txt);">Risk Score Formula</td>
+                <td colspan="2" style="padding: 16px; font-family: var(--mono); color: var(--brand);">100 &minus; (0.30&times;DV + 0.30&times;TA + 0.25&times;FV + 0.15&times;DC)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid g3" style="margin-top:28px;">
+          <div class="card reveal">
+            <span class="tag" style="background:rgba(18,161,80,0.14);color:#4ade80;border:1px solid rgba(18,161,80,0.3);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block;margin-bottom:12px;">LOW RISK (0&ndash;39)</span>
+            <h3>AUTO CLEAR</h3>
+            <p>All check signals are robust and within expected variance. Document passes automated verification immediately.</p>
+          </div>
+          <div class="card reveal" style="transition-delay:.06s">
+            <span class="tag" style="background:rgba(217,138,6,0.14);color:#fbbf24;border:1px solid rgba(217,138,6,0.3);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block;margin-bottom:12px;">MEDIUM RISK (40&ndash;69)</span>
+            <h3>MANUAL REVIEW</h3>
+            <p>One or more check signals indicate potential anomalies. Routed to a human compliance specialist for inspection.</p>
+          </div>
+          <div class="card reveal" style="transition-delay:.12s">
+            <span class="tag" style="background:rgba(220,38,38,0.14);color:#f87171;border:1px solid rgba(220,38,38,0.3);padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block;margin-bottom:12px;">HIGH RISK (70&ndash;100)</span>
+            <h3>SECONDARY VERIFICATION</h3>
+            <p>High probability of document editing, tampering, or face mismatch. Escalated immediately for secondary identity verification.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy & Security Section -->
+  <section class="alt" id="privacy">
+    <div class="container">
+      <div class="split">
+        <div class="reveal">
+          <div class="sec-kicker">Privacy &amp; security</div>
+          <h2>Your images never leave the device</h2>
+          <p>The ECLIPSE VERIFY engine executes 100% inside the user's web browser using WebGL and WebAssembly. Image preprocessing, OCR, forensics, and biometric face comparison happen locally &mdash; zero uploads to external servers.</p>
+          <ul class="ticks" style="list-style:none;margin-top:20px;display:grid;gap:12px;">
+            <li style="display:flex;align-items:center;gap:10px;color:var(--txt);font-weight:600;"><span style="color:var(--green);font-weight:800;">&#10003;</span> Client-side WebAssembly analysis pipeline</li>
+            <li style="display:flex;align-items:center;gap:10px;color:var(--txt);font-weight:600;"><span style="color:var(--green);font-weight:800;">&#10003;</span> Zero image storage or remote data retention</li>
+            <li style="display:flex;align-items:center;gap:10px;color:var(--txt);font-weight:600;"><span style="color:var(--green);font-weight:800;">&#10003;</span> Local neural OCR engine with offline capabilities</li>
+            <li style="display:flex;align-items:center;gap:10px;color:var(--txt);font-weight:600;"><span style="color:var(--green);font-weight:800;">&#10003;</span> Transparent, explainable risk score breakdown</li>
+          </ul>
+        </div>
+        <div class="card reveal" style="transition-delay:.08s;padding:28px;">
+          <h3 style="margin-bottom:16px;color:var(--txt);">Pipeline Inspection Stages</h3>
+          <div style="display:grid;gap:10px;">
+            <div class="mcheck"><span class="dot ok"></span> 1. Image preprocessing <span class="t">HTML5 Canvas</span></div>
+            <div class="mcheck"><span class="dot ok"></span> 2. OCR &amp; text extraction <span class="t">Tesseract WASM</span></div>
+            <div class="mcheck"><span class="dot warn"></span> 3. Tamper forensics <span class="t">ELA &bull; Copy-Move</span></div>
+            <div class="mcheck"><span class="dot ok"></span> 4. Face matching <span class="t">128-D Embeddings</span></div>
+            <div class="mcheck"><span class="dot ok"></span> 5. Risk score fusion <span class="t">Weighted Matrix</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roadmap & Fabric Section -->
+  <section id="roadmap">
+    <div class="container">
+      <div class="split">
+        <div class="reveal">
+          <div class="sec-kicker">Roadmap</div>
+          <h2>From prototype to enterprise trust layer</h2>
+          <p>The current release is a fully functional ML prototype. Next-generation releases integrate enterprise security backbones and sealed audit trails.</p>
+          <ul class="ticks" style="list-style:none;margin-top:20px;display:grid;gap:12px;">
+            <li style="display:flex;align-items:center;gap:10px;color:var(--txt);font-weight:600;"><span style="color:var(--green);font-weight:800;">&#10003;</span> Deep-learning document &amp; passive liveness models</li>
+            <li style="display:flex;align-items:center;gap:10px;color:var(--txt);font-weight:600;"><span style="color:var(--green);font-weight:800;">&#10003;</span> Hyperledger Fabric ledger for sealed audit trails</li>
+            <li style="display:flex;align-items:center;gap:10px;color:var(--txt);font-weight:600;"><span style="color:var(--green);font-weight:800;">&#10003;</span> Enterprise API with cryptographic verification receipts</li>
+            <li style="display:flex;align-items:center;gap:10px;color:var(--txt);font-weight:600;"><span style="color:var(--green);font-weight:800;">&#10003;</span> Continuous anti-fraud model retraining loops</li>
+          </ul>
+        </div>
+        <div class="card reveal" style="transition-delay:.08s;background:var(--panel2);border-color:var(--line-strong);padding:28px;" id="fabric">
+          <h3 style="color:var(--txt);margin-bottom:8px;">Hyperledger Fabric Layer</h3>
+          <p style="color:var(--muted);font-size:14px;line-height:1.6;">Every verification event is sealed into an immutable, permissioned ledger record &mdash; hash-linked, auditable, and tamper-evident across consortium nodes.</p>
+          <p style="color:var(--brand);font-size:12.5px;margin-top:16px;font-family:var(--mono);background:var(--panel);padding:10px 14px;border-radius:8px;border:1px solid var(--line);">verify &rarr; score &rarr; hash &rarr; Fabric Tx &rarr; receipt</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Band -->
+  <section>
+    <div class="container">
+      <div class="cta-band reveal">
+        <h2>Put a real document through the pipeline</h2>
+        <p>Upload a sample passport or your own test ID image and watch our pipeline explain every decision factor in real time.</p>
+        <a href="verify.html" class="btn btn-secondary btn-lg">Open the live demo
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="index.html" aria-label="ECLIPSE VERIFY home">
+          <span class="brand-mark">
+            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="17" cy="17" r="14" stroke="currentColor" stroke-width="2.5" opacity="0.2"/>
+              <path d="M17 3A14 14 0 0 1 29 21A14 14 0 0 1 17 31" stroke="var(--brand)" stroke-width="2.8" stroke-linecap="round"/>
+              <circle cx="17" cy="17" r="8" stroke="var(--brand-2)" stroke-width="2" stroke-dasharray="24 8"/>
+              <circle cx="17" cy="17" r="3.5" fill="var(--brand)"/>
+            </svg>
+          </span>
+          <span class="brand-name">ECLIPSE<em>VERIFY</em></span>
+        </a>
+        <p>Document and identity intelligence with transparent, explainable risk scoring. Built for trust and compliance by design.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="product.html">How it works</a>
+        <a href="product.html#checks">The four checks</a>
+        <a href="product.html#model">Risk model</a>
+        <a href="verify.html">Live demo</a>
+      </div>
+      <div class="foot-col">
+        <h4>Platform</h4>
+        <a href="product.html#privacy">Privacy &amp; security</a>
+        <a href="product.html#roadmap">Roadmap</a>
+        <a href="product.html#fabric">Hyperledger Fabric</a>
+      </div>
+      <div class="foot-col">`r`n        <h4>Company</h4>`r`n        <a href="product.html">About &amp; Overview</a>`r`n        <a href="verify.html">System Status</a>`r`n        <a href="signin.html">Sign In &amp; Portal</a>`r`n      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 ECLIPSE VERIFY. All rights reserved.</span>
+      <span class="demo">ML PROTOTYPE - DEMO ONLY</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+<!-- Three.js + Vanta.js 3D Globe Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var vantaEffect = null;
+    function initVanta() {
+      if (typeof VANTA !== 'undefined' && VANTA.GLOBE) {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        vantaEffect = VANTA.GLOBE({
+          el: "#vanta-bg-product",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0x0d9488,
+          color2: 0x14b8a6,
+          size: 1.35,
+          backgroundColor: isDark ? 0x080c16 : 0xf8fbff
+        });
+      }
+    }
+    initVanta();
+
+    var observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.attributeName === 'data-theme') {
+          if (vantaEffect) vantaEffect.destroy();
+          initVanta();
+        }
+      });
+    });
+    observer.observe(document.documentElement, { attributes: true });
+  });
+</script>
+</body>
+</html>

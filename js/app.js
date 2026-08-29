@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 /* =============================================================
    ECLIPSE VERIFY â€” ML PROTOTYPE  ::  DEMONSTRATION ONLY
@@ -400,7 +400,7 @@ async function runOcr(canvas) {
   }
   try {
     const result = await raceTimeout(async () => {
-      const worker = await Tesseract.createWorker('eng', 1, { logger: () => {} });
+      const worker = await Tesseract.createWorker('eng', 1, { logger: () => { } });
       try {
         const { data } = await worker.recognize(canvas);
         return data;
@@ -696,74 +696,74 @@ async function checkFaceVerification(docCanvas, faceState) {
         }
       }
       if (engine === null) {
-      const [dn, fn] = await Promise.all([detectFaceRobust(docCanvas, 3), detectFaceRobust(fcanvas, 3)]);
-      if (dn && fn) {
-        // selfies often fill the whole frame, which the TinyFaceDetector rejects
-        // and answers with a small misleading patch. The sample's selfie is a
-        // crop of the *same* doc photo region, so when the doc side gives clean
-        // landmarks we embed the landmark-aligned face from BOTH canvases â€” the
-        // same aligned geometry at each canvas's own resolution â€” instead of
-        // letting a bogus selfie detection box drive the comparison.
-        let alignedOk = false;
-        if (dn.lf && dn.lf.align) {
-          try {
-            const fnr = { x: dn.x, y: dn.y };
-            const pad = Math.max(dn.w * 0.65, dn.h * 0.4, 16);
-            const ax = clamp(fnr.x - pad, 0, docCanvas.width);
-            const ay = clamp(fnr.y - pad * 1.1, 0, docCanvas.height);
-            const aw = Math.min(dn.w + pad * 2, docCanvas.width - ax);
-            const ah = Math.min(dn.h + pad * 2.2, docCanvas.height - ay);
-            const sc2 = Math.min(392 / aw, 392 / ah);
-            const offX = (420 - aw * sc2) / 2, offY = (420 - ah * sc2) / 2;
-            const alDoc = dn.lf.align(224);
-            const mR = (r) => new window.faceapi.Rect(Math.max(0, (r.x - ax) * sc2 + offX), Math.max(0, (r.y - ay) * sc2 + offY), Math.min(420, r.width * sc2), Math.min(420, r.height * sc2));
-            const alSelf = mR(alDoc);
-            const docAligned = window.faceapi.getFaceImage(docCanvas, alDoc);
-            const selfAligned = window.faceapi.getFaceImage(fcanvas, alSelf);
-            const describe = (img) => window.faceapi.faceRecognitionNet.computeFaceDescriptor(img);
-            const [dDesc, sDesc] = await Promise.all([describe(docAligned), describe(selfAligned)]);
-            if (dDesc && sDesc && dDesc.length && sDesc.length) {
-              edist = window.faceapi.euclideanDistance(dDesc, sDesc);
+        const [dn, fn] = await Promise.all([detectFaceRobust(docCanvas, 3), detectFaceRobust(fcanvas, 3)]);
+        if (dn && fn) {
+          // selfies often fill the whole frame, which the TinyFaceDetector rejects
+          // and answers with a small misleading patch. The sample's selfie is a
+          // crop of the *same* doc photo region, so when the doc side gives clean
+          // landmarks we embed the landmark-aligned face from BOTH canvases â€” the
+          // same aligned geometry at each canvas's own resolution â€” instead of
+          // letting a bogus selfie detection box drive the comparison.
+          let alignedOk = false;
+          if (dn.lf && dn.lf.align) {
+            try {
+              const fnr = { x: dn.x, y: dn.y };
+              const pad = Math.max(dn.w * 0.65, dn.h * 0.4, 16);
+              const ax = clamp(fnr.x - pad, 0, docCanvas.width);
+              const ay = clamp(fnr.y - pad * 1.1, 0, docCanvas.height);
+              const aw = Math.min(dn.w + pad * 2, docCanvas.width - ax);
+              const ah = Math.min(dn.h + pad * 2.2, docCanvas.height - ay);
+              const sc2 = Math.min(392 / aw, 392 / ah);
+              const offX = (420 - aw * sc2) / 2, offY = (420 - ah * sc2) / 2;
+              const alDoc = dn.lf.align(224);
+              const mR = (r) => new window.faceapi.Rect(Math.max(0, (r.x - ax) * sc2 + offX), Math.max(0, (r.y - ay) * sc2 + offY), Math.min(420, r.width * sc2), Math.min(420, r.height * sc2));
+              const alSelf = mR(alDoc);
+              const docAligned = window.faceapi.getFaceImage(docCanvas, alDoc);
+              const selfAligned = window.faceapi.getFaceImage(fcanvas, alSelf);
+              const describe = (img) => window.faceapi.faceRecognitionNet.computeFaceDescriptor(img);
+              const [dDesc, sDesc] = await Promise.all([describe(docAligned), describe(selfAligned)]);
+              if (dDesc && sDesc && dDesc.length && sDesc.length) {
+                edist = window.faceapi.euclideanDistance(dDesc, sDesc);
+                sim = clamp(100 - edist * 62, 4, 99.5);
+                engine = 'face-api';
+                alignedOk = true;
+              }
+            } catch (e) { console.warn('aligned embedding failed â€” trying detector path', e); }
+          }
+          if (!alignedOk) {
+            const normDescTry = async (canvas, f) => {
+              const pad = Math.max(f.w, f.h) * 0.35;
+              const cx = clamp(f.x - pad, 0, canvas.width);
+              const cy = clamp(f.y - pad * 0.9, 0, canvas.height);
+              const cw = Math.min(f.w + pad * 2, canvas.width - cx);
+              const ch = Math.min(f.h + pad * 1.8, canvas.height - cy);
+              if (cw < 12 || ch < 12) return null;
+              const cut = document.createElement('canvas'); cut.width = Math.max(8, Math.round(cw)); cut.height = Math.max(8, Math.round(ch));
+              cut.getContext('2d').drawImage(canvas, cx, cy, cw, ch, 0, 0, cut.width, cut.height);
+              const N = 224, z = document.createElement('canvas'); z.width = N; z.height = N;
+              const zx = z.getContext('2d'); const sc = Math.max(N / cut.width, N / cut.height);
+              zx.drawImage(cut, (N - cut.width * sc) / 2, (N - cut.height * sc) / 2, cut.width * sc, cut.height * sc);
+              for (const isz of [224, 416, 160, 128]) {
+                try {
+                  const r = await window.faceapi.detectSingleFace(z, new window.faceapi.TinyFaceDetectorOptions({ inputSize: isz, scoreThreshold: 0.05 })).withFaceDescriptor();
+                  if (r) return r.descriptor;
+                } catch (e) { /* try next */ }
+              }
+              return null;
+            };
+            const dd = dn.desc || await normDescTry(docCanvas, dn);
+            const sd = fn.desc || await normDescTry(fcanvas, fn);
+            const dA = dn.desc && fn.desc ? dn.desc : dd;
+            const dB = dn.desc && fn.desc ? fn.desc : sd;
+            if (dA && dB) {
+              edist = window.faceapi.euclideanDistance(dA, dB);
               sim = clamp(100 - edist * 62, 4, 99.5);
               engine = 'face-api';
-              alignedOk = true;
             }
-          } catch (e) { console.warn('aligned embedding failed â€” trying detector path', e); }
-        }
-        if (!alignedOk) {
-          const normDescTry = async (canvas, f) => {
-            const pad = Math.max(f.w, f.h) * 0.35;
-            const cx = clamp(f.x - pad, 0, canvas.width);
-            const cy = clamp(f.y - pad * 0.9, 0, canvas.height);
-            const cw = Math.min(f.w + pad * 2, canvas.width - cx);
-            const ch = Math.min(f.h + pad * 1.8, canvas.height - cy);
-            if (cw < 12 || ch < 12) return null;
-            const cut = document.createElement('canvas'); cut.width = Math.max(8, Math.round(cw)); cut.height = Math.max(8, Math.round(ch));
-            cut.getContext('2d').drawImage(canvas, cx, cy, cw, ch, 0, 0, cut.width, cut.height);
-            const N = 224, z = document.createElement('canvas'); z.width = N; z.height = N;
-            const zx = z.getContext('2d'); const sc = Math.max(N / cut.width, N / cut.height);
-            zx.drawImage(cut, (N - cut.width * sc) / 2, (N - cut.height * sc) / 2, cut.width * sc, cut.height * sc);
-            for (const isz of [224, 416, 160, 128]) {
-              try {
-                const r = await window.faceapi.detectSingleFace(z, new window.faceapi.TinyFaceDetectorOptions({ inputSize: isz, scoreThreshold: 0.05 })).withFaceDescriptor();
-                if (r) return r.descriptor;
-              } catch (e) { /* try next */ }
-            }
-            return null;
-          };
-          const dd = dn.desc || await normDescTry(docCanvas, dn);
-          const sd = fn.desc || await normDescTry(fcanvas, fn);
-          const dA = dn.desc && fn.desc ? dn.desc : dd;
-          const dB = dn.desc && fn.desc ? fn.desc : sd;
-          if (dA && dB) {
-            edist = window.faceapi.euclideanDistance(dA, dB);
-            sim = clamp(100 - edist * 62, 4, 99.5);
-            engine = 'face-api';
           }
+          docFaceW = Math.round(dn.w);
+          sfFaceW = Math.round(fn.w);
         }
-        docFaceW = Math.round(dn.w);
-        sfFaceW = Math.round(fn.w);
-      }
       }
     } catch (e) { console.warn('face embedding extraction failed â€” classical fallback', e); }
   }
@@ -1473,4 +1473,4 @@ if (window.location.search.includes('sample') || window.location.search.includes
     const btn = btnSample;
     if (btn) btn.click();
   }, 350);
-}color:#38bdf8;font-weight:bold');
+}

@@ -87,11 +87,11 @@
   function getTheme() {
     var stored = localStorage.getItem(THEME_KEY);
     if (stored === 'light' || stored === 'dark') return stored;
-    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    return 'light'; // Default to light mode
   }
 
   function applyTheme(theme) {
-    if (theme !== 'light' && theme !== 'dark') theme = 'dark';
+    if (theme !== 'light' && theme !== 'dark') theme = 'light';
     document.documentElement.setAttribute('data-theme', theme);
     try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
     

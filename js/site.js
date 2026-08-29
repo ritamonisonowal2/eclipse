@@ -1,4 +1,4 @@
-﻿/* ==========================================================
+/* ==========================================================
    ECLIPSE VERIFY - Unified Site Scripts, Navigation & Auth System
    ========================================================== */
 (function () {
@@ -86,34 +86,52 @@
 
   function getTheme() {
     var stored = localStorage.getItem(THEME_KEY);
-    if (stored) return stored;
+    if (stored === 'light' || stored === 'dark') return stored;
     return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
   }
 
   function applyTheme(theme) {
+    if (theme !== 'light' && theme !== 'dark') theme = 'dark';
     document.documentElement.setAttribute('data-theme', theme);
     try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
-    var btn = document.getElementById('themeToggle');
-    if (btn) {
+    
+    var toggles = document.querySelectorAll('#themeToggle, .theme-toggle');
+    toggles.forEach(function (btn) {
       if (theme === 'dark') {
         btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
         btn.setAttribute('title', 'Switch to Light Mode');
+        btn.setAttribute('aria-label', 'Switch to Light Mode');
       } else {
         btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
         btn.setAttribute('title', 'Switch to Dark Mode');
+        btn.setAttribute('aria-label', 'Switch to Dark Mode');
       }
-    }
+    });
   }
 
   function initTheme() {
     var theme = getTheme();
     applyTheme(theme);
-    var btn = document.getElementById('themeToggle');
-    if (btn) {
-      btn.addEventListener('click', function () {
-        var current = document.documentElement.getAttribute('data-theme') || 'light';
-        var next = (current === 'dark') ? 'light' : 'dark';
-        applyTheme(next);
+    
+    var toggles = document.querySelectorAll('#themeToggle, .theme-toggle');
+    toggles.forEach(function (btn) {
+      if (!btn._hasThemeListener) {
+        btn._hasThemeListener = true;
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          var current = document.documentElement.getAttribute('data-theme') || 'dark';
+          var next = (current === 'dark') ? 'light' : 'dark';
+          applyTheme(next);
+        });
+      }
+    });
+
+    if (window.matchMedia && !window._hasColorSchemeListener) {
+      window._hasColorSchemeListener = true;
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+        if (!localStorage.getItem(THEME_KEY)) {
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
       });
     }
   }
@@ -291,17 +309,17 @@
     setTimeout(function () { openAuth('signup'); }, 300);
   }
 
-  // Initialize
-  document.addEventListener('DOMContentLoaded', function() {
+  // Safe Single Initialization
+  function initApp() {
     updateActiveNav();
     initMobileNav();
     initTheme();
     mountAuth();
-  });
+  }
 
-  // Fallback in case DOM is already ready
-  updateActiveNav();
-  initMobileNav();
-  initTheme();
-  mountAuth();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 })();
